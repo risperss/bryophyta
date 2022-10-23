@@ -1,0 +1,2 @@
+class Bryophyta:
+    pass
