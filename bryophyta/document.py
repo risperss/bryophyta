@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 import string
+import sys
 
 
 @dataclass
 class GlobalPosition:
-    min_: int
+    index: int
     r: int
     w: int
 
@@ -19,7 +20,7 @@ class Document:
     original_text: str
     cleaned_text: str
     k_gram_hashes: list[int]
-    fingerprints: list[int]
+    fingerprints: list[Fingerprint]
     # TODO: give proper default values
     k: int
     w: int
@@ -31,6 +32,7 @@ class Document:
 
         self.cleaned_text = Document._clean_string(text)
         self.k_gram_hashes = self.rolling_hash()
+        self.fingerprints = self.winnow()
 
     @staticmethod
     def _clean_string(text: str):
@@ -75,4 +77,33 @@ class Document:
         return k_gram_hashes
 
     def winnow(self):
-        pass
+        self.fingerprints = []
+        w = self.w
+        h = [sys.maxsize for _ in range(w)]
+
+        r = 0
+        min_ = 0
+
+        def record():
+            fingerprint = Fingerprint(h[min_], GlobalPosition(min_, r, w))
+            self.fingerprints.append(fingerprint)
+
+        index = 1
+        for hash in self.k_gram_hashes:
+            r = (r + 1) % w
+            h[r] = hash
+
+            if index < w:
+                index += 1
+                continue
+
+            if min_ == r:
+                i = (r - 1) % w
+                while i != r:
+                    min_ = i if h[i] < h[min_] else min_
+                    i = (i - 1 + w) % w
+                record()
+            else:
+                if h[r] <= h[min_]:
+                    min_ = r
+                    record()
