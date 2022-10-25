@@ -1,18 +1,36 @@
+from dataclasses import dataclass
 import string
-import sys
+
+
+@dataclass
+class GlobalPosition:
+    min_: int
+    r: int
+    w: int
+
+
+@dataclass
+class Fingerprint:
+    val: int
+    global_position: GlobalPosition
 
 
 class Document:
     original_text: str
     cleaned_text: str
     k_gram_hashes: list[int]
-    k: int # default value is 3 for testing purposes
+    fingerprints: list[int]
+    # TODO: give proper default values
+    k: int
+    w: int
 
-    def __init__(self, text: str, k: int = 3):
+    def __init__(self, text: str, k: int = 3, w: int = 4):
         self.original_text = text
-        self.cleaned_text = Document._clean_string(text)
-        self.k_gram_hashes = Document._rolling_hash(k, self.cleaned_text)
         self.k = k
+        self.w = w
+
+        self.cleaned_text = Document._clean_string(text)
+        self.k_gram_hashes = self.rolling_hash()
 
     @staticmethod
     def _clean_string(text: str):
@@ -22,10 +40,12 @@ class Document:
 
         return text 
 
-    @staticmethod
-    def _rolling_hash(k: int, text: str):
+    def rolling_hash(self):
+        # TODO: give proper default values
         b = 521 # base
         p = 101 # prime modulus
+        text = self.cleaned_text
+        k = self.k
 
         k_gram_hashes = []
 
@@ -53,3 +73,6 @@ class Document:
             i += 1
 
         return k_gram_hashes
+
+    def winnow(self):
+        pass
