@@ -1,2 +1,5 @@
+from bryophyta.document import Document
+
+
 class Bryophyta:
-    pass
+    documents: list[Document]

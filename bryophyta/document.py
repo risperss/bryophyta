@@ -25,7 +25,7 @@ class Document:
     k: int
     w: int
 
-    def __init__(self, text: str, k: int = 3, w: int = 4):
+    def __init__(self, text: str, k: int = 50, w: int = 100):
         self.original_text = text
         self.k = k
         self.w = w
@@ -88,13 +88,13 @@ class Document:
             fingerprint = Fingerprint(h[min_], GlobalPosition(min_, r, w))
             self.fingerprints.append(fingerprint)
 
-        index = 1
+        delay = 1
         for hash in self.k_gram_hashes:
             r = (r + 1) % w
             h[r] = hash
 
-            if index < w:
-                index += 1
+            if delay < w:
+                delay += 1
                 continue
 
             if min_ == r:
