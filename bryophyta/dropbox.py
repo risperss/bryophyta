@@ -47,4 +47,4 @@ class Dropbox:
     def compare_documents(self, document_1: Document, document_2: Document, report: DropboxReport):
         for fingerprint in document_1.content.fingerprints:
             if fingerprint in document_2.content.fingerprints:
-
+                pass
