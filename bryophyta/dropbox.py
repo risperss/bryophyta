@@ -8,13 +8,28 @@ class DocumentFingerprint:
     document: Document
     fingerprint: Fingerprint
 
+    @property
+    def val(self):
+        return self.fingerprint.val
+
+    def __eq__(self, other):
+        if isinstance(other, DocumentFingerprint):
+            return self.val == other.val
+        raise NotImplementedError
+
+    def __lt__(self, other):
+        if isinstance(other, DocumentFingerprint):
+            return self.val < other.val
+        raise NotImplementedError
+
 
 class Match:
-    document_fingerprint_1: DocumentFingerprint    
-    document_fingerprint_1: DocumentFingerprint
-    matching_text: str
+    f1: DocumentFingerprint    
+    f2: DocumentFingerprint
+    matching_text: str # TODO: find proper home
 
 
+@dataclass
 class DocumentReport:
     document: Document
     matches: list[Match]
@@ -32,19 +47,21 @@ class Dropbox:
     def __init__(self, documents: list[Document]):
         self.documents = documents
 
-    def generate_report(self):
-        return self.compare_documents()
+    def generate_report(self) -> DropboxReport:
+        document_fingerprints: list[DocumentFingerprint] = []
 
-    def compare_documents(self):
-        report = DropboxReport
+        for document in self.documents:
+            for document_fingerprint in document.content.fingerprints:
+                document_fingerprints.append(DocumentFingerprint(document, document_fingerprint))
 
-        n = len(self.documents)
-        for i in range(n - 1):
-            document = self.documents[i]
-            for j in range(i + 1, n):
-                self.compare_documents(document, self.documents[j])
+        document_fingerprints.sort()
 
-    def compare_documents(self, document_1: Document, document_2: Document, report: DropboxReport):
-        for fingerprint in document_1.content.fingerprints:
-            if fingerprint in document_2.content.fingerprints:
-                pass
+        groups: dict[int, list[DocumentFingerprint]] = {}
+
+        for document_fingerprint in document_fingerprints:
+            try:
+                groups[document_fingerprint.val].append(document_fingerprint)
+            except KeyError:
+                groups[document_fingerprint.val] = [document_fingerprint]
+
+        return groups # TODO: go through this and establish the relationships between documents
