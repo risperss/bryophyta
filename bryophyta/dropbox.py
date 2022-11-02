@@ -8,10 +8,10 @@ from bryophyta.document_content import Fingerprint
 class DocumentFingerprint:
     document: Document
     fingerprint: Fingerprint
-        
+
 
 class Match:
-    f1: DocumentFingerprint    
+    f1: DocumentFingerprint
     f2: DocumentFingerprint
     matching_text: str # TODO: find proper home
 
