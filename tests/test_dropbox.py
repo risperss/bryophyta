@@ -1,9 +1,9 @@
+import lorem
 import random
 import string
 import unittest
 from shortuuid import uuid
 
-import lorem
 from bryophyta.document import Author, Document
 from bryophyta.document_content import DocumentContent
 
@@ -33,15 +33,15 @@ class Test(unittest.TestCase):
         import pdb; pdb.set_trace()
 
 def generate_doc_text(
-    copied_text: str = None, 
-    num_words: int = 5000, 
+    copied_text: str = None,
+    num_words: int = 5000,
 ) -> str:
     copied_text = copied_text or lorem.paragraph()
     num_chars = 5 * num_words
 
     index = random.randint(0, num_chars)
     letters = string.ascii_lowercase
-    
+
     text = [random.choice(letters) for _ in range(num_chars)]
     text.insert(index, copied_text)
     text = "".join(text)

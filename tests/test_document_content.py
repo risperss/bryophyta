@@ -1,3 +1,4 @@
+import lorem
 import unittest
 
 from bryophyta.document_content import DocumentContent
@@ -15,6 +16,14 @@ class Test(unittest.TestCase):
 
         self.assertEqual(hashes[0], hashes[7])
         self.assertEqual(hashes[1], hashes[8])
+
+    def test_rolling_hash_distribution(self):
+        text = "".join([lorem.paragraph() for _ in range(60)])
+        document = DocumentContent(text)
+
+        average_hash = sum(document.k_gram_hashes) / len(document.k_gram_hashes)
+
+        self.assertEqual(average_hash, -1)
 
     def test_winnow(self):
         document = DocumentContent("A do run run run, a do run run", k=3, w=4)

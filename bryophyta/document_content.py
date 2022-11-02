@@ -40,7 +40,10 @@ class DocumentContent:
         text = "".join(text.split())
         text = text.translate(str.maketrans('', '', string.punctuation))
 
-        return text 
+        return text
+
+    def _val(self, char) -> int:
+        return 100 * ord(char)
 
     def rolling_hash(self):
         # TODO: give proper default values
@@ -53,11 +56,11 @@ class DocumentContent:
 
         hv = 0 # hash value
         for index in range(k-1):
-            hv += ord(text[index])
+            hv += self._val(text[index])
             hv %= p
             hv *= b
             hv %= p
-        hv += ord(text[k-1])
+        hv += self._val(text[k-1])
         hv %= p
 
         k_gram_hashes.append(hv)
@@ -67,8 +70,8 @@ class DocumentContent:
             lbo = (lbo * b) % p
 
         for i, index in enumerate(range(k, len(text))):
-            lcv = ord(text[i]) # left char value
-            rcv = ord(text[index]) # right char value
+            lcv = self._val(text[i]) # left char value
+            rcv = self._val(text[index]) # right char value
             hv = ((hv + p - ((lcv*lbo) % p)) * b + rcv) % p
             k_gram_hashes.append(hv)
 
