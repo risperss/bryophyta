@@ -44,8 +44,8 @@ class DocumentContent:
 
     def rolling_hash(self):
         # TODO: give proper default values
-        b = 521 # base
-        p = 101 # prime modulus
+        b = 53 # base
+        p = 2**64 - 1 # prime modulus
         text = self.cleaned_text
         k = self.k
 
@@ -66,35 +66,27 @@ class DocumentContent:
         for _ in range(k-2):
             lbo = (lbo * b) % p
 
-        i = 0 # index of the leading character
-        for index in range(k, len(text)):
+        for i, index in enumerate(range(k, len(text))):
             lcv = ord(text[i]) # left char value
             rcv = ord(text[index]) # right char value
             hv = ((hv + p - ((lcv*lbo) % p)) * b + rcv) % p
             k_gram_hashes.append(hv)
-            i += 1
 
         return k_gram_hashes
 
     def winnow(self):
-        self.fingerprints = []
+        fingerprints = []
         w = self.w
         h = [sys.maxsize for _ in range(w)]
 
         r = 0
         min_ = 0
 
-        def record():
-            fingerprint = Fingerprint(h[min_], GlobalPosition(min_, r, w))
-            self.fingerprints.append(fingerprint)
-
-        delay = 1
-        for hash in self.k_gram_hashes:
+        for i, hash in enumerate(self.k_gram_hashes, start=1):
             r = (r + 1) % w
             h[r] = hash
 
-            if delay < w:
-                delay += 1
+            if i < w:
                 continue
 
             if min_ == r:
@@ -102,8 +94,10 @@ class DocumentContent:
                 while i != r:
                     min_ = i if h[i] < h[min_] else min_
                     i = (i - 1 + w) % w
-                record()
+                fingerprints.append(Fingerprint(h[min_], GlobalPosition(min_, r, w)))
             else:
                 if h[r] <= h[min_]:
                     min_ = r
-                    record()
+                    fingerprints.append(Fingerprint(h[min_], GlobalPosition(min_, r, w)))
+
+        return fingerprints

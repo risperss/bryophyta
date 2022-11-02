@@ -20,7 +20,7 @@ class Test(unittest.TestCase):
         document = DocumentContent("A do run run run, a do run run", k=3, w=4)
 
         document.k_gram_hashes = [77, 74, 42, 17, 98, 50, 17, 98, 8, 88, 67, 39, 77, 74, 42, 17, 98]
-        document.winnow()
+        document.fingerprints = document.winnow()
 
         fingerprints = [f.val for f in document.fingerprints]
         expected = [17, 17, 8, 39, 17]

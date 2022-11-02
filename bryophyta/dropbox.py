@@ -4,24 +4,11 @@ from bryophyta.document import Document
 from bryophyta.document_content import Fingerprint
 
 
+@dataclass
 class DocumentFingerprint:
     document: Document
     fingerprint: Fingerprint
-
-    @property
-    def val(self):
-        return self.fingerprint.val
-
-    def __eq__(self, other):
-        if isinstance(other, DocumentFingerprint):
-            return self.val == other.val
-        raise NotImplementedError
-
-    def __lt__(self, other):
-        if isinstance(other, DocumentFingerprint):
-            return self.val < other.val
-        raise NotImplementedError
-
+        
 
 class Match:
     f1: DocumentFingerprint    
@@ -54,14 +41,14 @@ class Dropbox:
             for document_fingerprint in document.content.fingerprints:
                 document_fingerprints.append(DocumentFingerprint(document, document_fingerprint))
 
-        document_fingerprints.sort()
-
-        groups: dict[int, list[DocumentFingerprint]] = {}
+        groups = {}
 
         for document_fingerprint in document_fingerprints:
             try:
-                groups[document_fingerprint.val].append(document_fingerprint)
+                groups[document_fingerprint.fingerprint.val].append(document_fingerprint)
             except KeyError:
-                groups[document_fingerprint.val] = [document_fingerprint]
+                groups[document_fingerprint.fingerprint.val] = [document_fingerprint]
+
+        groups = {k: v for k, v in groups.items() if len(v) > 1}
 
         return groups # TODO: go through this and establish the relationships between documents
