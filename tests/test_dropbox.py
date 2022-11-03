@@ -1,25 +1,23 @@
-import lorem
-import random
-import string
 import unittest
 from shortuuid import uuid
 
 from bryophyta.document import Author, Document
 from bryophyta.document_content import DocumentContent
+from tests.utils import generate_random_string, generate_plagiarized_document
 
 from bryophyta.dropbox import Dropbox
 
 
-class Test(unittest.TestCase):
+class TestDropbox(unittest.TestCase):
     def test_generate_report(self):
-        copied_text = lorem.paragraph()
+        copied_text = generate_random_string(150)
 
-        text_1 = generate_doc_text(copied_text=copied_text)
+        text_1 = generate_plagiarized_document(copied_text, 5000)
         author_1 = Author("Adam")
         doc_1_name = uuid()[:10]
         doc_1 = Document(doc_1_name, author_1, DocumentContent(text_1))
 
-        text_2 = generate_doc_text(copied_text=copied_text)
+        text_2 = generate_plagiarized_document(copied_text, 5000)
         author_2 = Author("Thomas")
         doc_2_name = uuid()[:10]
         doc_2 = Document(doc_2_name, author_2, DocumentContent(text_2))
@@ -31,19 +29,3 @@ class Test(unittest.TestCase):
         report = dropbox.generate_report()
 
         import pdb; pdb.set_trace()
-
-def generate_doc_text(
-    copied_text: str = None,
-    num_words: int = 5000,
-) -> str:
-    copied_text = copied_text or lorem.paragraph()
-    num_chars = 5 * num_words
-
-    index = random.randint(0, num_chars)
-    letters = string.ascii_lowercase
-
-    text = [random.choice(letters) for _ in range(num_chars)]
-    text.insert(index, copied_text)
-    text = "".join(text)
-
-    return text

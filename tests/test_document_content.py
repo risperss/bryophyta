@@ -1,9 +1,9 @@
-import lorem
 import unittest
 
 from bryophyta.document_content import DocumentContent
+from tests.utils import generate_random_string
 
-class Test(unittest.TestCase):
+class TestDocumentContent(unittest.TestCase):
     def test_clean_text(self):
         document = DocumentContent("A do run run run, a do run run", k=3, w=4)
 
@@ -18,13 +18,14 @@ class Test(unittest.TestCase):
         self.assertEqual(hashes[1], hashes[8])
 
     def test_rolling_hash_distribution(self):
-        text = "".join([lorem.paragraph() for _ in range(60)])
+        text = generate_random_string(50_000)
         document = DocumentContent(text)
 
         average_hash = sum(document.k_gram_hashes) / len(document.k_gram_hashes)
+        expected_average = (2**64 - 1) / 2
 
-        self.assertGreater(average_hash, 9.2e+18 * 0.90)
-        self.assertLess(average_hash, 9.2e+18 * 1.10)
+        self.assertGreater(average_hash, expected_average * 0.90)
+        self.assertLess(average_hash, expected_average * 1.10)
 
     def test_winnow(self):
         document = DocumentContent("A do run run run, a do run run", k=3, w=4)

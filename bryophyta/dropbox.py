@@ -51,4 +51,8 @@ class Dropbox:
 
         groups = {k: v for k, v in groups.items() if len(v) > 1}
 
+        for group in groups:
+            matches
+
+
         return groups # TODO: go through this and establish the relationships between documents
