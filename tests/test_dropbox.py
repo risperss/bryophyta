@@ -21,7 +21,7 @@ class Test(unittest.TestCase):
 
         text_2 = generate_doc_text(copied_text=copied_text)
         author_2 = Author("Thomas")
-        doc_2_name = "Disco Irish"
+        doc_2_name = uuid()[:10]
         doc_2 = Document(doc_2_name, author_2, DocumentContent(text_2))
 
         documents = [doc_1, doc_2]

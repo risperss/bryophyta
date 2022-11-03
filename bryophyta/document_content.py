@@ -47,7 +47,7 @@ class DocumentContent:
 
     def rolling_hash(self):
         # TODO: give proper default values
-        b = 53 # base
+        b = 23 # base
         p = 2**64 - 1 # prime modulus
         text = self.cleaned_text
         k = self.k

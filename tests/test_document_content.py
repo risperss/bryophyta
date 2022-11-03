@@ -23,7 +23,8 @@ class Test(unittest.TestCase):
 
         average_hash = sum(document.k_gram_hashes) / len(document.k_gram_hashes)
 
-        self.assertEqual(average_hash, -1)
+        self.assertGreater(average_hash, 9.2e+18 * 0.90)
+        self.assertLess(average_hash, 9.2e+18 * 1.10)
 
     def test_winnow(self):
         document = DocumentContent("A do run run run, a do run run", k=3, w=4)
