@@ -27,11 +27,11 @@ class Dropbox:
         groups = {k: v for k, v in groups.items() if len(v) > 1}
 
         for group in groups.values():
-            document_names = [document.name for document, _ in group]
+            document_names = [document.title for document, _ in group]
 
             for document_fingerprint in group:
                 document, fingerprint = document_fingerprint
                 matching_text = document.get_matching_text(fingerprint)
                 other_document_names = document_names.copy()
-                other_document_names.remove(document.name)
+                other_document_names.remove(document.title)
                 document.matches.append(Match(fingerprint, other_document_names, matching_text))

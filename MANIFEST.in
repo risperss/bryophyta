@@ -1,0 +1,4 @@
+include bryophyta/schema.sql
+graft bryophyta/static
+graft bryophyta/templates
+global-exclude *.pyc

@@ -20,5 +20,5 @@ def generate_plagiarized_document(text: str, length: int) -> str:
     index = random.randint(0, length)
     prefix = generate_random_string(index)
     suffix = generate_random_string(abs(length-index))
-    
+
     return prefix + text + suffix
