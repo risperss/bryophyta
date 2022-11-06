@@ -24,9 +24,7 @@ class TestDropbox(unittest.TestCase):
 
         documents = [doc_1, doc_2]
 
-        dropbox = Dropbox(documents)
-
-        dropbox.compare_documents()
+        Dropbox(documents)
 
         texts_1 = [match.matching_text for match in doc_1.matches]
         texts_2 = [match.matching_text for match in doc_2.matches]
@@ -46,9 +44,7 @@ class TestDropbox(unittest.TestCase):
 
         documents = [doc_1, doc_2]
 
-        dropbox = Dropbox(documents)
-
-        dropbox.compare_documents()
+        Dropbox(documents)
 
         texts_1 = [match.matching_text for match in doc_1.matches]
         texts_2 = [match.matching_text for match in doc_2.matches]

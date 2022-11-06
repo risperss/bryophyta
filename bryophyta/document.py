@@ -17,12 +17,11 @@ class Match:
 
 @dataclass
 class Document:
-    name: str
+    title: str
     author: Author
     content: DocumentContent
     matches: list[Match] = field(default_factory=list)
     percent_match: float = 0.0
-
 
     def get_matching_text(self, fingerprint: Fingerprint) -> str:
         i = fingerprint.global_position.index

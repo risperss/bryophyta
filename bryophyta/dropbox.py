@@ -6,6 +6,7 @@ class Dropbox:
 
     def __init__(self, documents: list[Document]):
         self.documents = documents
+        self.compare_documents()
 
     def compare_documents(self):
         document_fingerprints = []
