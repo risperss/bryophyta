@@ -9,7 +9,7 @@ from bryophyta.dropbox import Dropbox
 
 
 class TestDropbox(unittest.TestCase):
-    def test_generate_report(self):
+    def test_compare_2_documents(self):
         copied_text = generate_random_string(150)
 
         text_1 = generate_plagiarized_document(copied_text, 5000)
@@ -26,6 +26,31 @@ class TestDropbox(unittest.TestCase):
 
         dropbox = Dropbox(documents)
 
-        report = dropbox.generate_report()
+        dropbox.compare_documents()
 
-        import pdb; pdb.set_trace()
+        texts_1 = [match.matching_text for match in doc_1.matches]
+        texts_2 = [match.matching_text for match in doc_2.matches]
+
+        self.assertListEqual(texts_1, texts_2)
+
+    def test_compare_identical_documents(self):
+        text = generate_plagiarized_document("", 1000)
+
+        author_1 = Author("Adam")
+        doc_1_name = uuid()[:10]
+        doc_1 = Document(doc_1_name, author_1, DocumentContent(text))
+
+        author_2 = Author("Thomas")
+        doc_2_name = uuid()[:10]
+        doc_2 = Document(doc_2_name, author_2, DocumentContent(text))
+
+        documents = [doc_1, doc_2]
+
+        dropbox = Dropbox(documents)
+
+        dropbox.compare_documents()
+
+        texts_1 = [match.matching_text for match in doc_1.matches]
+        texts_2 = [match.matching_text for match in doc_2.matches]
+
+        self.assertListEqual(texts_1, texts_2)

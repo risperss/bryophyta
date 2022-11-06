@@ -3,11 +3,25 @@ import string
 import sys
 
 
-@dataclass
 class GlobalPosition:
     index: int
+    min_: int
     r: int
     w: int
+
+    def __init__(self, index: int, min_: int, r: int, w: int):
+        self.min_ = min_
+        self.r = r
+        self.w = w
+        self.index = self._get_absolute_index(index)
+
+    def _get_absolute_index(self, index):
+        if self.min_ == self.r:
+            return index
+        elif self.min_ < self.r:
+            return index - (self.r - self.min_)
+        else:
+            return index - (self.w - (self.min_ - self.r))
 
 
 @dataclass
@@ -85,11 +99,11 @@ class DocumentContent:
         r = 0
         min_ = 0
 
-        for i, hash in enumerate(self.k_gram_hashes, start=1):
+        for index, hash in enumerate(self.k_gram_hashes):
             r = (r + 1) % w
             h[r] = hash
 
-            if i < w:
+            if index + 1 < w:
                 continue
 
             if min_ == r:
@@ -97,10 +111,10 @@ class DocumentContent:
                 while i != r:
                     min_ = i if h[i] < h[min_] else min_
                     i = (i - 1 + w) % w
-                fingerprints.append(Fingerprint(h[min_], GlobalPosition(min_, r, w)))
+                fingerprints.append(Fingerprint(h[min_], GlobalPosition(index, min_, r, w)))
             else:
                 if h[r] <= h[min_]:
                     min_ = r
-                    fingerprints.append(Fingerprint(h[min_], GlobalPosition(min_, r, w)))
+                    fingerprints.append(Fingerprint(h[min_], GlobalPosition(index, min_, r, w)))
 
         return fingerprints

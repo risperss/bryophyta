@@ -1,31 +1,4 @@
-from dataclasses import dataclass
-
-from bryophyta.document import Document
-from bryophyta.document_content import Fingerprint
-
-
-@dataclass
-class DocumentFingerprint:
-    document: Document
-    fingerprint: Fingerprint
-
-
-class Match:
-    f1: DocumentFingerprint
-    f2: DocumentFingerprint
-    matching_text: str # TODO: find proper home
-
-
-@dataclass
-class DocumentReport:
-    document: Document
-    matches: list[Match]
-    percent_match: float
-
-
-@dataclass
-class DropboxReport:
-    document_reports: list[DocumentReport]
+from bryophyta.document import Document, Match
 
 
 class Dropbox:
@@ -34,25 +7,30 @@ class Dropbox:
     def __init__(self, documents: list[Document]):
         self.documents = documents
 
-    def generate_report(self) -> DropboxReport:
-        document_fingerprints: list[DocumentFingerprint] = []
+    def compare_documents(self):
+        document_fingerprints = []
 
         for document in self.documents:
             for document_fingerprint in document.content.fingerprints:
-                document_fingerprints.append(DocumentFingerprint(document, document_fingerprint))
+                document_fingerprints.append((document, document_fingerprint))
 
         groups = {}
 
         for document_fingerprint in document_fingerprints:
+            document, fingerprint = document_fingerprint
             try:
-                groups[document_fingerprint.fingerprint.val].append(document_fingerprint)
+                groups[fingerprint.val].append(document_fingerprint)
             except KeyError:
-                groups[document_fingerprint.fingerprint.val] = [document_fingerprint]
+                groups[fingerprint.val] = [document_fingerprint]
 
         groups = {k: v for k, v in groups.items() if len(v) > 1}
 
-        for group in groups:
-            matches
+        for group in groups.values():
+            document_names = [document.name for document, _ in group]
 
-
-        return groups # TODO: go through this and establish the relationships between documents
+            for document_fingerprint in group:
+                document, fingerprint = document_fingerprint
+                matching_text = document.get_matching_text(fingerprint)
+                other_document_names = document_names.copy()
+                other_document_names.remove(document.name)
+                document.matches.append(Match(fingerprint, other_document_names, matching_text))
