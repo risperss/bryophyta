@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Documents{% endblock %}</h1>
+  <h1>{% block title %}Report{% endblock %}</h1>
   {% if g.user %}
     <a class="action" href="{{ url_for('dropbox.create') }}">New</a>
   {% endif %}
@@ -16,16 +16,17 @@
           <h1>{{ document['title'] }}</h1>
           <div class="about">by {{ document['username'] }} on {{ document['created'].strftime('%Y-%m-%d') }}</div>
         </div>
-          <a class="action" href="{{ url_for('dropbox.update', id=document['id']) }}">Edit</a>
       </header>
       <p class="body">{{ document['body'] }}</p>
     </article>
+      {% for match in matches %}
+        {% if document['id'] == match['document_id'] %}
+          <p class="body">{{ match['body'] }}</p>
+        {% endif %}
+      {% endfor %}
     {% endif %}
     {% if not loop.last %}
       <hr>
     {% endif %}
   {% endfor %}
-  <p>
-    <a class="action" href="{{ url_for('dropbox.calculate') }}">Calculate</a>
-  </p>
 {% endblock %}

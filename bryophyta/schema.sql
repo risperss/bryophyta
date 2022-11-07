@@ -15,3 +15,10 @@ CREATE TABLE document (
   body TEXT NOT NULL,
   FOREIGN KEY (author_id) REFERENCES user (id)
 );
+
+CREATE TABLE match (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  document_id INTEGER NOT NULL,
+  body TEXT NOT NULL,
+  FOREIGN KEY (document_id) REFERENCES document (id)
+);

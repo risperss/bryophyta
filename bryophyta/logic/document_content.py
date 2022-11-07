@@ -44,7 +44,8 @@ class DocumentContent:
         self.k = k
         self.w = w
 
-        self.cleaned_text = DocumentContent._clean_string(text)
+        # self.cleaned_text = DocumentContent._clean_string(text)
+        self.cleaned_text = text
         self.k_gram_hashes = self.rolling_hash()
         self.fingerprints = self.winnow()
 

@@ -5,6 +5,8 @@ from werkzeug.exceptions import abort
 
 from bryophyta.auth import login_required
 from bryophyta.db import get_db
+from bryophyta.logic.document import Document
+from bryophyta.logic.dropbox import Dropbox
 
 bp = Blueprint('dropbox', __name__)
 
@@ -98,3 +100,31 @@ def delete(id):
     db.execute('DELETE FROM document WHERE id = ?', (id,))
     db.commit()
     return redirect(url_for('dropbox.index'))
+
+
+@bp.route('/calculate', methods=('GET',))
+@login_required
+def calculate():
+    db = get_db()
+    documents = db.execute(
+        'SELECT d.id, title, body, created, author_id, username'
+        ' FROM document d JOIN user u ON d.author_id = u.id'
+        ' ORDER BY created DESC'
+    ).fetchall()
+    docs = [Document(d['id'], d['title'], d['body']) for d in documents]
+
+    for match in Dropbox(docs).compare_documents():
+        db.execute(
+            'INSERT INTO match (document_id, body)'
+            ' VALUES (?, ?)',
+            (match.document_id, match.matching_text)
+        )
+        db.commit()
+
+    matches = db.execute(
+        'SELECT m.id, document_id, m.body'
+        ' FROM match m JOIN document d ON m.document_id = d.id'
+        ' JOIN user u ON d.author_id = u.id'
+    ).fetchall()
+
+    return render_template('dropbox/report.html', documents=documents, matches=matches)
