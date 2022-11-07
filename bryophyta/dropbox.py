@@ -112,19 +112,5 @@ def calculate():
         ' ORDER BY created DESC'
     ).fetchall()
     docs = [Document(d['id'], d['title'], d['body']) for d in documents]
-
-    for match in Dropbox(docs).compare_documents():
-        db.execute(
-            'INSERT INTO match (document_id, body)'
-            ' VALUES (?, ?)',
-            (match.document_id, match.matching_text)
-        )
-        db.commit()
-
-    matches = db.execute(
-        'SELECT m.id, document_id, m.body'
-        ' FROM match m JOIN document d ON m.document_id = d.id'
-        ' JOIN user u ON d.author_id = u.id'
-    ).fetchall()
-
+    matches = list(Dropbox(docs).compare_documents())
     return render_template('dropbox/report.html', documents=documents, matches=matches)

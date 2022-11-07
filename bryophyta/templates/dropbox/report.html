@@ -20,8 +20,8 @@
       <p class="body">{{ document['body'] }}</p>
     </article>
       {% for match in matches %}
-        {% if document['id'] == match['document_id'] %}
-          <p class="body">{{ match['body'] }}</p>
+        {% if document['id'] == match.document_id %}
+          <p class="body">{{ match.matching_text }}</p>
         {% endif %}
       {% endfor %}
     {% endif %}
