@@ -19,6 +19,7 @@
       </header>
       <p class="body">{{ document['body'] }}</p>
     </article>
+      <hr>
       {% for match in matches %}
         {% if document['id'] == match.document_id %}
           <p class="body">{{ match.matching_text }}</p>
@@ -29,4 +30,7 @@
       <hr>
     {% endif %}
   {% endfor %}
+  <p>
+    <a class="action" href="{{ url_for('dropbox.index') }}">Return Home</a>
+  </p>
 {% endblock %}

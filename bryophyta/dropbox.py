@@ -102,9 +102,12 @@ def delete(id):
     return redirect(url_for('dropbox.index'))
 
 
-@bp.route('/calculate', methods=('GET',))
+@bp.route('/calculate', methods=('GET', 'POST'))
 @login_required
 def calculate():
+    if request.method == 'POST':
+        return redirect(url_for('dropbox.index'))
+
     db = get_db()
     documents = db.execute(
         'SELECT d.id, title, body, created, author_id, username'
