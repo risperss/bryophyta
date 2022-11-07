@@ -1,4 +1,4 @@
-from bryophyta.document_content import DocumentContent
+from bryophyta.logic.document_content import DocumentContent
 from tests.utils import generate_random_string
 
 

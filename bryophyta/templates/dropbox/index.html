@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Documents{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('dropbox.create') }}">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% for document in documents %}
+    {% if g.user['id'] == document['author_id'] %}
+    <article class="document">
+      <header>
+        <div>
+          <h1>{{ document['title'] }}</h1>
+          <div class="about">by {{ document['username'] }} on {{ document['created'].strftime('%Y-%m-%d') }}</div>
+        </div>
+          <a class="action" href="{{ url_for('dropbox.update', id=document['id']) }}">Edit</a>
+      </header>
+      <p class="body">{{ document['body'] }}</p>
+    </article>
+    {% endif %}
+    {% if not loop.last %}
+      <hr>
+    {% endif %}
+  {% endfor %}
+{% endblock %}

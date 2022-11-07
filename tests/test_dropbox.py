@@ -1,10 +1,10 @@
 from shortuuid import uuid
 
-from bryophyta.document import Author, Document
-from bryophyta.document_content import DocumentContent
+from bryophyta.logic.document import Author, Document
+from bryophyta.logic.document_content import DocumentContent
 from tests.utils import generate_random_string, generate_plagiarized_document
 
-from bryophyta.dropbox import Dropbox
+from bryophyta.logic.dropbox import Dropbox
 
 
 def test_compare_2_documents():

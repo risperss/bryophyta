@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from bryophyta.document_content import DocumentContent, Fingerprint
+from bryophyta.logic.document_content import DocumentContent, Fingerprint
 
 
 @dataclass
