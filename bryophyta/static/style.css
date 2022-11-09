@@ -135,5 +135,5 @@ input[type=submit] {
 
 .match {
     font-weight: bold;
-    color: red;
+    background-color: red;
 }
