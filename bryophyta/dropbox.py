@@ -65,12 +65,6 @@ def get_document(id, check_author=True):
 
 
 def get_documents(id, check_author=True):
-    db = get_db()
-    documents = db.execute(
-        'SELECT d.id, title, body, created, author_id, username, percent_match'
-        ' FROM document d JOIN user u ON d.author_id = u.id'
-        ' ORDER BY created DESC'
-    ).fetchall()
 
     return documents
 
@@ -119,22 +113,17 @@ def calculate():
     if request.method == 'POST':
         return redirect(url_for('dropbox.index'))
 
-    documents = get_documents(g.user['id'])
+    db = get_db()
+    documents = db.execute(
+        'SELECT d.id, title, body, created, author_id, username'
+        ' FROM document d JOIN user u ON d.author_id = u.id'
+        ' ORDER BY created DESC'
+    ).fetchall()
 
     docs = [Document(d['id'], d['title'], d['body']) for d in documents]
     dropbox = Dropbox(docs)
     dropbox.calculate()
-
-    db = get_db()
-    for document in dropbox.documents:
-        db.execute(
-            'UPDATE document SET percent_match = ?'
-            ' WHERE id = ?',
-            (document.percent_match, document.id)
-        )
-        db.commit()
-
-    documents = get_documents(g.user['id'])
+    documents = dropbox.documents
     matches = dropbox.list_matches()
 
     return render_template('dropbox/report.html', documents=documents, matches=matches)

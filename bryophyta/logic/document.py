@@ -112,7 +112,21 @@ class Document:
         self._combine_overlapping_matches(overlapping_matches)
 
     def calculate_percent_match(self):
-        self.percent_match = sum([len(match.matching_text) for match in self.matches]) / len(self.content.cleaned_text)
+        len_matches = sum([len(match.matching_text) for match in self.matches])
+        len_document = len(self.content.cleaned_text)
+        self.percent_match = len_matches / len_document
+
+    def highlight_text(self) -> str:
+        # matches are still in order of appearance
+        text = self.content.cleaned_text
+
+        for match in self.matches:
+            start_index = text.index(match.matching_text)
+            end_index = start_index + match.length
+            text = text[:end_index] + "</span>" + text[end_index:]
+            text = text[:start_index] + "<span class=\"match\">" + text[start_index:]
+
+        return text
 
     def process(self):
         self.combine_matches()

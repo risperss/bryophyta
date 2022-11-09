@@ -6,22 +6,16 @@
 
 {% block content %}
   {% for document in documents %}
-    {% if g.user['id'] == document['author_id'] %}
     <article class="document">
       <header>
         <div>
-          <h1>{{ document['title'] }} - {{ '{:.1%}'.format(document['percent_match']) }}</h1>
+          <h1>{{ document.title }} - {{ '{:.1%}'.format(document.percent_match) }}</h1>
         </div>
       </header>
-      <p class="body">{{ document['body'] }}</p>
+      <p class="body">
+        {{ document.highlight_text()|safe }}
+      </p>
     </article>
-      <hr>
-      {% for match in matches %}
-        {% if document['id'] == match.document_id %}
-          <p class="body">{{ match.matching_text }}</p>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
     {% if not loop.last %}
       <hr>
     {% endif %}
