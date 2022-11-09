@@ -6,8 +6,8 @@ from bryophyta.logic.document_content import DocumentContent, Fingerprint
 class Match:
     document_id: int
     matching_text: str
-    fingerprint: Fingerprint = None
-    iindex: int = None
+    fingerprint: Fingerprint
+    set_index: int
 
     def __init__(
         self,
@@ -19,12 +19,14 @@ class Match:
         self.document_id = document_id
         self.matching_text = matching_text
         self.fingerprint = fingerprint
-        self.iindex = index
+        self.set_index = index
 
 
     @property
     def index(self):
-        return self.iindex or self.fingerprint.global_position.index
+        if self.set_index is not None:
+            return self.set_index
+        return self.fingerprint.global_position.index
 
     @property
     def length(self):
@@ -73,7 +75,7 @@ class Document:
         if self._matches_overlap(self.matches[-2], self.matches[-1]):
             try:
                 overlaps[-1].append(self.matches[-1])
-            except KeyError:
+            except IndexError:
                 overlaps.append(self.matches[-2], self.matches[-1])
 
         return overlaps
@@ -82,23 +84,25 @@ class Document:
     def _matches_overlap(match1: Match, match2: Match):
         return match1.index + match1.length >= match2.index
 
-    def _combine_matches(self, overlaps: list[list[Match]]):
+    def _combine_overlapping_matches(self, overlaps: list[list[Match]]):
         self.matches = []
 
         for group in overlaps:
-            match = self._combine_match(group[0], group[1])
+            match = self._combine_matches(group[0], group[1])
             #TODO: fix this grossness
             for i in range(2, len(group)):
-                match = self._combine_match(match, group[i])
+                match = self._combine_matches(match, group[i])
 
             self.matches.append(match)
 
     @staticmethod
-    def _combine_match(match1: Match, match2: Match) -> Match:
-        diff = match2.index - match1.index
-        matching_text = match1.matching_text + match2.matching_text[-diff:]
+    def _combine_matches(match1: Match, match2: Match) -> Match:
+        match1_end = match1.index + match1.length
+        match2_start = match2.index
+        overlap_length = match1_end - match2_start
+        matching_text = match1.matching_text + match2.matching_text[overlap_length:]
 
         return Match(match1.document_id, matching_text, index=match1.index)
 
     def combine_matches(self):
-        self._combine_matches(self._group_overlapping_matches())
+        self._combine_overlapping_matches(self._group_overlapping_matches())

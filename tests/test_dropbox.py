@@ -19,6 +19,6 @@ def test_compare_2_documents():
     doc_2 = Document(2, doc_2_name, text_2)
 
     dropbox = Dropbox([doc_1, doc_2])
-    matches = dropbox.compare_documents()
+    dropbox.calculate()
 
     #TODO: rewrite tests after refactor
