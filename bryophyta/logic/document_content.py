@@ -13,15 +13,16 @@ class GlobalPosition:
         self.min_ = min_
         self.r = r
         self.w = w
-        self.index = self._get_absolute_index(index)
+        self.index = self._get_absolute_index(min_, r, w, index)
 
-    def _get_absolute_index(self, index):
-        if self.min_ == self.r:
+    @staticmethod
+    def _get_absolute_index(min_, r, w, index):
+        if min_ == r:
             return index
-        elif self.min_ < self.r:
-            return index - (self.r - self.min_)
+        elif min_ < r:
+            return index - (r - min_)
         else:
-            return index - (self.w - (self.min_ - self.r))
+            return index - (w - (min_ - r))
 
 
 @dataclass

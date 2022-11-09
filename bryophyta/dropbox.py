@@ -115,5 +115,7 @@ def calculate():
         ' ORDER BY created DESC'
     ).fetchall()
     docs = [Document(d['id'], d['title'], d['body']) for d in documents]
-    matches = list(Dropbox(docs).compare_documents())
+    dropbox = Dropbox(docs)
+    dropbox.calculate()
+    matches = list(dropbox.list_matches())
     return render_template('dropbox/report.html', documents=documents, matches=matches)

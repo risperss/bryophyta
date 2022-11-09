@@ -7,7 +7,7 @@ class Dropbox:
     def __init__(self, documents: list[Document]):
         self.documents = documents
 
-    def compare_documents(self):
+    def _compare_documents(self):
         document_fingerprints = []
 
         for document in self.documents:
@@ -29,4 +29,23 @@ class Dropbox:
             for document_fingerprint in group:
                 document, fingerprint = document_fingerprint
                 matching_text = document.get_matching_text(fingerprint)
-                yield Match(document.id, matching_text)
+                document.matches.append(
+                    Match(
+                        document.id,
+                        matching_text,
+                        fingerprint=fingerprint
+                    )
+                )
+
+    def _combine_document_matches(self):
+        for document in self.documents:
+            document.combine_matches()
+
+    def calculate(self):
+        self._compare_documents()
+        self._combine_document_matches()
+
+    def list_matches(self):
+        for document in self.documents:
+            for match in document.matches:
+                yield match

@@ -1,7 +1,9 @@
+import pytest
 from bryophyta.logic.document_content import DocumentContent
 from tests.utils import generate_random_string
 
 
+@pytest.mark.skip(reason="Debating whether to clean text")
 def test_clean_text():
     document = DocumentContent("A do run run run, a do run run", k=3, w=4)
     assert document.cleaned_text == "adorunrunrunadorunrun"
