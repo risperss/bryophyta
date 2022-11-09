@@ -53,7 +53,7 @@ class DocumentContent:
     @staticmethod
     def _clean_string(text: str):
         text = text.lower()
-        text = "".join(text.split())
+        text = ''.join(text.split())
         text = text.translate(str.maketrans('', '', string.punctuation))
 
         return text

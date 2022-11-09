@@ -2,9 +2,6 @@
 
 {% block header %}
   <h1>{% block title %}Report{% endblock %}</h1>
-  {% if g.user %}
-    <a class="action" href="{{ url_for('dropbox.create') }}">New</a>
-  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -13,8 +10,7 @@
     <article class="document">
       <header>
         <div>
-          <h1>{{ document['title'] }}</h1>
-          <div class="about">by {{ document['username'] }} on {{ document['created'].strftime('%Y-%m-%d') }}</div>
+          <h1>{{ document['title'] }} - {{ '{:.1%}'.format(document['percent_match']) }}</h1>
         </div>
       </header>
       <p class="body">{{ document['body'] }}</p>

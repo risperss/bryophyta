@@ -1,5 +1,3 @@
-from dataclasses import dataclass, field
-
 from bryophyta.logic.document_content import DocumentContent, Fingerprint
 
 
@@ -68,15 +66,17 @@ class Document:
             group.append(self.matches[i])
 
             if not self._matches_overlap(self.matches[i], self.matches[i+1]):
-                if len(group) > 1:
-                    overlaps.append(group)
+                overlaps.append(group)
                 group = []
+
+        if group:
+            overlaps.append(group)
 
         if self._matches_overlap(self.matches[-2], self.matches[-1]):
             try:
                 overlaps[-1].append(self.matches[-1])
             except IndexError:
-                overlaps.append(self.matches[-2], self.matches[-1])
+                overlaps.append([self.matches[-2], self.matches[-1]])
 
         return overlaps
 
@@ -88,10 +88,13 @@ class Document:
         self.matches = []
 
         for group in overlaps:
-            match = self._combine_matches(group[0], group[1])
-            #TODO: fix this grossness
-            for i in range(2, len(group)):
-                match = self._combine_matches(match, group[i])
+            if len(group) > 1:
+                match = self._combine_matches(group[0], group[1])
+                #TODO: fix this grossness
+                for i in range(2, len(group)):
+                    match = self._combine_matches(match, group[i])
+            else:
+                match = group[0]
 
             self.matches.append(match)
 
@@ -105,4 +108,12 @@ class Document:
         return Match(match1.document_id, matching_text, index=match1.index)
 
     def combine_matches(self):
-        self._combine_overlapping_matches(self._group_overlapping_matches())
+        overlapping_matches = self._group_overlapping_matches()
+        self._combine_overlapping_matches(overlapping_matches)
+
+    def calculate_percent_match(self):
+        self.percent_match = sum([len(match.matching_text) for match in self.matches]) / len(self.content.cleaned_text)
+
+    def process(self):
+        self.combine_matches()
+        self.calculate_percent_match()

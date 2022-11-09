@@ -37,15 +37,17 @@ class Dropbox:
                     )
                 )
 
-    def _combine_document_matches(self):
+    def _process_documents(self):
         for document in self.documents:
-            document.combine_matches()
+            document.process()
 
     def calculate(self):
         self._compare_documents()
-        self._combine_document_matches()
+        self._process_documents()
 
     def list_matches(self):
+        matches = []
         for document in self.documents:
             for match in document.matches:
-                yield match
+                matches.append(match)
+        return matches
