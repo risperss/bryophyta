@@ -64,11 +64,6 @@ def get_document(id, check_author=True):
     return document
 
 
-def get_documents(id, check_author=True):
-
-    return documents
-
-
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
