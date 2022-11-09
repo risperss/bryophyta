@@ -40,12 +40,11 @@ class DocumentContent:
     k: int
     w: int
 
-    def __init__(self, text: str, k: int = 50, w: int = 100):
+    def __init__(self, text: str, k: int = 100, w: int = 100):
         self.original_text = text
         self.k = k
         self.w = w
 
-        # self.cleaned_text = DocumentContent._clean_string(text)
         self.cleaned_text = text
         self.k_gram_hashes = self.rolling_hash()
         self.fingerprints = self.winnow()

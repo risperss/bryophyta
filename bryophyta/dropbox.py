@@ -49,7 +49,7 @@ def create():
 
 def get_document(id, check_author=True):
     document = get_db().execute(
-        'SELECT d.id, title, body, created, author_id, username, percent_match'
+        'SELECT d.id, title, body, created, author_id, username'
         ' FROM document d JOIN user u ON d.author_id = u.id'
         ' WHERE d.id = ?',
         (id,)
